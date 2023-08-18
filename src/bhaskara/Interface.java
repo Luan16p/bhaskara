@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 public class Interface {
 	private JFrame UI;
@@ -16,6 +17,10 @@ public class Interface {
 	private JTextField input_get_b;
 	private JTextField input_get_c;
 	private JButton submit;
+	private JLabel labelResult;
+	private JLabel result;
+	private DecimalFormat df;
+	private Font setarFonte;
 
 	public Interface() {
 		DefineInterfaceElements();
@@ -24,11 +29,17 @@ public class Interface {
 		
 		UI.setSize(500, 500);
 		UI.setVisible(true);
+		UI.setLocationRelativeTo(null);
 	}
 	
 	private void DefineInterfaceElements() {
 		UI = new JFrame();
+		
+		setarFonte = new Font("Arial", Font.BOLD, 20);
+		
 		text_h2 = new JLabel("Bem vindo ao 'BhaskaraIF'");
+		
+		text_h2.setFont(setarFonte);
 		
 		label_for_a = new JLabel("Digite o Valor de A:");
 		input_get_a = new JTextField(15);
@@ -48,23 +59,33 @@ public class Interface {
 		submit = new JButton("Calcular");
 		
 		labelEquacao = new JLabel("f(x) = ax² + bx + c");
+		
+		labelResult = new JLabel("");
+		
+		result = new JLabel("");
 	}
 	
 	private void AddInterfaceElements() {
 	    UI.setLayout(new BoxLayout(UI.getContentPane(), BoxLayout.Y_AXIS));
-
+	    
+	    UI.add(Box.createVerticalStrut(15));
+	    
 	    addCenteredComponent(text_h2);
 	    
-	    UI.add(Box.createVerticalStrut(7));
+	    UI.add(Box.createVerticalStrut(25));
+	    
 	    addCenteredComponent(label_for_a);
+	    UI.add(Box.createVerticalStrut(5));
 	    addCenteredComponent(input_get_a);
 	    
 	    UI.add(Box.createVerticalStrut(7));
 	    addCenteredComponent(label_for_b);
+	    UI.add(Box.createVerticalStrut(5));
 	    addCenteredComponent(input_get_b);
 	    
 	    UI.add(Box.createVerticalStrut(7));
 	    addCenteredComponent(label_for_c);
+	    UI.add(Box.createVerticalStrut(5));
 	    addCenteredComponent(input_get_c);
 	    
 	    UI.add(Box.createVerticalStrut(15));
@@ -72,15 +93,25 @@ public class Interface {
 	    UI.add(Box.createVerticalStrut(15));
 	    
 	    addCenteredComponent(labelEquacao);
+	    
+	    UI.add(Box.createVerticalStrut(15));
+	    
+	    addCenteredComponent(labelResult);
+	    
+	    UI.add(Box.createVerticalStrut(15));
+	    
+	    addCenteredComponent(result);
 	}
 
 	private void addCenteredComponent(Component component) {
 	    ((JComponent) component).setAlignmentX(Component.CENTER_ALIGNMENT);
+	    
 	    UI.add(component);
 	}
 	
 	private void controllerListeners() {
 		submit.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				String getContextA = input_get_a.getText();
 				String getContextB = input_get_b.getText();
@@ -91,7 +122,7 @@ public class Interface {
 		             double valueB = Double.parseDouble(getContextB);
 		             double valueC = Double.parseDouble(getContextC);
 		      
-		             labelEquacao.setText("f(x) = " + valueA + "x² +" + valueB + "x + " + valueC);
+		             labelEquacao.setText("f(x) = " + valueA + "x² +" + valueB + "x +" + valueC);
 		             
 		             calculeValues(valueA, valueB, valueC);
 		             
@@ -104,10 +135,30 @@ public class Interface {
 	}
 	
 	public void calculeValues(double a, double b, double c) {
-		double delta = b * b - 4 * a * c;
+		double delta = b * b - 4 * a * c; 
+
+		df = new DecimalFormat("#.###");
 		
-		if(delta >= 0) {
-			System.out.println(Math.sqrt(delta));
+		if (delta > 0) {
+			double inters1 = (-b + Math.sqrt(delta))/(2*a);
+			double inters2 = (-b - Math.sqrt(delta))/(2*a);
+			
+			
+			labelResult.setText("Resultado");
+			
+			result.setText("A curva toca o plano X nos pontos: " + df.format(inters1) + " e " + df.format(inters2));
+			
+			System.out.println("Resultado: \nX' -> " + inters1 + "\nX'' -> " + inters2);
+		}
+		
+		else if (delta == 0) {
+			double inters = (-b)/(2*a);
+			
+			labelResult.setText("Resultado");
+			
+			result.setText("A curva toca o plano X em: " + df.format(inters));
+			
+			System.out.println("Resultado: \nX -> " + inters);
 		}
 		
 		else {
